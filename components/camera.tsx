@@ -1,5 +1,6 @@
-import { Card, CardContent, Typography } from '@mui/material';
+import { Button, Card, CardContent, Typography } from '@mui/material';
 import React from 'react';
+import Url from '../constants/Url';
 
 export type CameraType = {
   id: string;
@@ -22,12 +23,42 @@ export default function Camera(props: Props) {
             Camera #{camera.id}
           </div>
         </Typography>
-        <Typography variant="h5" component="button">
-          Timestamp = {camera.timestamp}
-        </Typography>
         <Typography variant="h5">
           <div>Count = {camera.count}</div>
           <div>Last temperature = {camera.temperature} Celsius</div>
+          <div>Timestamp = {camera.timestamp}</div>
+        </Typography>
+        <Typography>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: '25px',
+            }}
+          >
+            <Button
+              size={'small'}
+              disabled={camera.count == '0'}
+              onClick={() => {
+                fetch(Url.server_url + '/counter/' + camera.id, {
+                  method: 'DELETE',
+                })
+                  .then((res) => {
+                    if (res.ok) {
+                      alert('Reset counter');
+                    } else {
+                      alert('Could not reset counter:\nStatus ' + res.status);
+                    }
+                  })
+                  .catch(() => {
+                    alert('Could not reset counter:\nCould not reach host');
+                  });
+              }}
+            >
+              Reset counter
+            </Button>
+          </div>
         </Typography>
       </CardContent>
     </Card>
